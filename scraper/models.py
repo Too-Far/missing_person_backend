@@ -9,7 +9,7 @@ class MissingPerson(models.Model):
     agency_state = models.CharField(max_length=200, null=True)
     agency_city = models.CharField(max_length=200, null=True)
     agency_name = models.CharField(max_length=200, null=True)
-    circumstances = models.CharField(max_length=800, null=True)
+    circumstances = models.CharField(max_length=8000, null=True)
     eye_color = models.CharField(max_length=200, null=True)
     hair_color = models.CharField(max_length=200, null=True)
     ethnicity = models.CharField(max_length=200, null=True)
