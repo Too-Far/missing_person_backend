@@ -25,9 +25,7 @@ SECRET_KEY = 'aqb+!**^)rm)(ro4*f(gp5hf8cqoyh*7t23bmy_7gu--kag%zt'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
-CORS_ALLOWED_ORIGINS = [
-    'http://localhost:3000'
-]
+CORS_ALLOW_ALL_ORIGINS = True
 
 ALLOWED_HOSTS = ['127.0.0.1','herokuapp.com']
 
