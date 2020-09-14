@@ -76,11 +76,10 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
         print('found {} id numbers'.format(len(id_numbers)))
         return id_numbers
 
-    def handle_json(self,data):
+    def handle_json(self,data, total_saved):
         '''
         Recieve raw json data. Parse data and store pertinent parts in the DB
         '''
-        print('entering handle_json')
         agency_primary = data['investigatingAgencies'][0]
         if data['hrefDefaultImageThumbnail']:
             thumbnail_url = 'https://www.namus.gov/{}'.format(
@@ -127,7 +126,7 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
         else:
             MP = MissingPerson(**data_to_save)
             MP.save()
-            print('Record Saved')
+            print('Record Saved{}'.format(total_saved))
             return True
 
     def get_individual_json(self, id_nums):
@@ -143,7 +142,7 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
                 response = requests.get(
                     'https://www.namus.gov/api/CaseSets/NamUs/MissingPersons/Cases/{}/'.format(num))
                 data = response.json()
-                saved = self.handle_json(data)
+                saved = self.handle_json(data, total_saved)
                 if saved is True:
                     total_saved += 1
             except HTTPError as http_error:
