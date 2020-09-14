@@ -59,7 +59,7 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
         id_numbers = []
         n = 0
         # ! Set # of pages to go through here
-        while n < 10:
+        while n < 4:
             print(n)
             cells = self.driver.find_elements_by_class_name(
                 'ui-grid-cell-contents')
