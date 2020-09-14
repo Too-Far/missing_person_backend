@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'aqb+!**^)rm)(ro4*f(gp5hf8cqoyh*7t23bmy_7gu--kag%zt'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:3000'
 ]
