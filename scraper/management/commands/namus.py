@@ -8,6 +8,7 @@ from selenium.webdriver.common.keys import Keys
 from webdriver_manager.chrome import ChromeDriverManager
 import re
 import requests
+import os
 from requests.exceptions import HTTPError
 from django.core.management.base import BaseCommand, CommandError
 from scraper.models import MissingPerson
@@ -21,12 +22,14 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
     def __init__(self):
         super().__init__()
         # Set Driver and options
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.add_argument('--disable-gpu')
-        chrome_options.add_argument('--no-sandbox')
-        chrome_options.binary_location = GOOGLE_CHROME_PATH
-        self.driver = webdriver.Chrome(
-            execution_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
+        options = Options()
+        options.binary_location = os.environ.get('GOOGLE_CHROME_BIN')
+        options.add_argument('--headless')
+        options.add_argument('--disable-gpu')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--remote-debugging-port=9222')
+        self.driver = webdriver.Chrome(executable_path=str(
+            os.environ.get('CHROMEDRIVER_PATH')), chrome_options=options)
 
     def handle(self, *args, **options):
         self.nav_to_home_page()
