@@ -16,6 +16,7 @@ from scraper.models import MissingPerson
 
 class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
     help = 'fetches the missing person data from namus'
+    
     def __init__(self):
         super().__init__()
         # Set Driver and options
@@ -40,6 +41,7 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
         '''
         Navigate to search result page and expand results to 100 per page.
         '''
+        print('entering nav_to_home_page')
         self.driver.get('https://www.namus.gov/MissingPersons/Search#/results')
         self.driver.implicitly_wait(10)
         more_results = self.driver.find_element_by_xpath(
@@ -53,6 +55,7 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
         for each page, search out ID numbers. Strip MP from front of ID 
         number, then append number to array for later use.
         '''
+        print('entering collect_ids')
         next_btn = self.driver.find_element_by_xpath(
             '/html/body/div[1]/div[4]/form/div[2]/section[2]/div/div/div/div/div[3]/div[3]/search-results-pager/ng-include/div/div/div/nav/button[2]')
         id_numbers = []
@@ -78,6 +81,7 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
         '''
         Recieve raw json data. Parse data and store pertinent parts in the DB
         '''
+        print('entering handle_json')
         agency_primary = data['investigatingAgencies'][0]
         if data['hrefDefaultImageThumbnail']:
             thumbnail_url = 'https://www.namus.gov/{}'.format(
@@ -133,6 +137,7 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
         all information pertaining to that case. For each page, call handle_json
         to parse and store data.
         '''
+        print('entering get_individual_json')
         total_saved = 0
         for num in id_nums:
             try:
