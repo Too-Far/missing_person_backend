@@ -53,13 +53,12 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
         for each page, search out ID numbers. Strip MP from front of ID 
         number, then append number to array for later use.
         '''
-        print('entering collect_ids')
         next_btn = self.driver.find_element_by_xpath(
             '/html/body/div[1]/div[4]/form/div[2]/section[2]/div/div/div/div/div[3]/div[3]/search-results-pager/ng-include/div/div/div/nav/button[2]')
         id_numbers = []
         n = 0
         # ! Set # of pages to go through here
-        while n < 4:
+        while n < 10:
             print(n)
             cells = self.driver.find_elements_by_class_name(
                 'ui-grid-cell-contents')
@@ -126,7 +125,7 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
         else:
             MP = MissingPerson(**data_to_save)
             MP.save()
-            print('Record Saved{}'.format(total_saved))
+            print('Record Saved {}'.format(total_saved))
             return True
 
     def get_individual_json(self, id_nums):
