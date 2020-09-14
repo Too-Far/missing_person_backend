@@ -30,7 +30,6 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
             ChromeDriverManager().install(), chrome_options=options)
 
     def handle(self, *args, **options):
-        print('entering handle')
         self.nav_to_home_page()
         id_nums = self.collect_ids()
         self.get_individual_json(id_nums)
@@ -41,7 +40,6 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
         '''
         Navigate to search result page and expand results to 100 per page.
         '''
-        print('entering nav_to_home_page')
         self.driver.get('https://www.namus.gov/MissingPersons/Search#/results')
         self.driver.implicitly_wait(10)
         more_results = self.driver.find_element_by_xpath(
@@ -62,6 +60,7 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
         n = 0
         # ! Set # of pages to go through here
         while n < 10:
+            print(n)
             cells = self.driver.find_elements_by_class_name(
                 'ui-grid-cell-contents')
             pattern = '^MP[0-9]'
