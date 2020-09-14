@@ -29,6 +29,7 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
             ChromeDriverManager().install(), chrome_options=options)
 
     def handle(self, *args, **options):
+        print('entering handle')
         self.nav_to_home_page()
         id_nums = self.collect_ids()
         self.get_individual_json(id_nums)
