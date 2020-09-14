@@ -14,10 +14,8 @@ from django.core.management.base import BaseCommand, CommandError
 from scraper.models import MissingPerson
 
 
-
 class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
     help = 'fetches the missing person data from namus'
-
     def __init__(self):
         super().__init__()
         # Set Driver and options
@@ -59,7 +57,7 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
         id_numbers = []
         n = 0
         # ! Set # of pages to go through here
-        while n < 90:
+        while n < 10:
             cells = self.driver.find_elements_by_class_name(
                 'ui-grid-cell-contents')
             pattern = '^MP[0-9]'
