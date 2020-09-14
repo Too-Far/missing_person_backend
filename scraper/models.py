@@ -2,8 +2,8 @@ from django.db import models
 
 class MissingPerson(models.Model):
 
-    case_qr_code = models.URLField(null=True)
-    thumbnail_url = models.URLField(null=True)
+    case_qr_code = models.URLField(max_length=250, null=True)
+    thumbnail_url = models.URLField(max_length=250, null=True)
     agency_zip = models.CharField(max_length=200, null=True)
     agency_address = models.CharField(max_length=200, null=True)
     agency_state = models.CharField(max_length=200, null=True)
@@ -22,7 +22,7 @@ class MissingPerson(models.Model):
     first_name = models.CharField(max_length=200, null=True)
     id_number = models.CharField(max_length=200, null=True, unique=True)
     date_reported = models.CharField(max_length=200, null=True)
-    agency_website = models.URLField(null=True)
+    agency_website = models.URLField(max_length=250, null=True)
 
     def __str__(self):
         name = '{} {}'.format(self.first_name, self.last_name)
