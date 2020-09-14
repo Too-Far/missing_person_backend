@@ -11,6 +11,8 @@ import requests
 from requests.exceptions import HTTPError
 from django.core.management.base import BaseCommand, CommandError
 from scraper.models import MissingPerson
+GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
+CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
 
 
 class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
@@ -19,7 +21,12 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
     def __init__(self):
         super().__init__()
         # Set Driver and options
-        self.driver = webdriver.Chrome(ChromeDriverManager().install())
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.binary_location = GOOGLE_CHROME_PATH
+        self.driver = webdriver.Chrome(
+            execution_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
 
     def handle(self, *args, **options):
         self.nav_to_home_page()
