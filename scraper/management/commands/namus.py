@@ -82,7 +82,7 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
         try:
             agency_primary = data['investigatingAgencies'][0]
         except IndexError:
-            pass
+            agency_primary = ''
         if data['hrefDefaultImageThumbnail']:
             thumbnail_url = 'https://www.namus.gov/{}'.format(
                 data['hrefDefaultImageThumbnail'])
@@ -99,7 +99,7 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
         # except KeyError:
         #     agency_website = ''
         try:
-            if agency_primary:
+            if agency_primary != '':
                 data_to_save = {
                     'id_number': data['id'],
                     'first_name': data['subjectIdentification']['firstName'],
@@ -123,6 +123,8 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
                     'date_reported': agency_primary['dateReported'],
                     'agency_website': agency_primary['selection']['agency']['websiteUrl']
                 }
+            else:
+                pass
         except KeyError:
             pass
         try:
