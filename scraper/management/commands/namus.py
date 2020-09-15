@@ -16,7 +16,7 @@ from scraper.models import MissingPerson
 
 class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
     help = 'fetches the missing person data from namus'
-    
+
     def __init__(self):
         super().__init__()
         # Set Driver and options
@@ -79,7 +79,10 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
         '''
         Recieve raw json data. Parse data and store pertinent parts in the DB
         '''
-        agency_primary = data['investigatingAgencies'][0]
+        try:
+            agency_primary = data['investigatingAgencies'][0]
+        except IndexError:
+            pass
         if data['hrefDefaultImageThumbnail']:
             thumbnail_url = 'https://www.namus.gov/{}'.format(
                 data['hrefDefaultImageThumbnail'])
@@ -87,46 +90,52 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
             # todo: insert a generic photo URL here. Or do it on the front end?
             # todo: Either make a static image or pick it up from the frontend.
             pass
+        # try:
+        #     date_reported = agency_primary['dateReported']
+        # except KeyError:
+        #     date_reported = ''
+        # try:
+        #     agency_website = agency_primary['selection']['agency']['websiteUrl']
+        # except KeyError:
+        #     agency_website = ''
         try:
-            date_reported = agency_primary['dateReported']
+            data_to_save = {
+                'id_number': data['id'],
+                'first_name': data['subjectIdentification']['firstName'],
+                'last_name': data['subjectIdentification']['lastName'],
+                'current_age': data['subjectIdentification']['currentMinAge'],
+                'age_when_missing': data['subjectIdentification']['computedMissingMinAge'],
+                'gender': data['subjectDescription']['sex']['name'],
+                'height': '{} inches'.format(data['subjectDescription']['heightFrom']),
+                'weight': '{} pounds'.format(data['subjectDescription']['weightFrom']),
+                'ethnicity': data['subjectDescription']['ethnicities'][0]['name'],
+                'hair_color': data['physicalDescription']['hairColor']['name'],
+                'eye_color': data['physicalDescription']['leftEyeColor']['name'],
+                'circumstances': data['circumstances']['circumstancesOfDisappearance'],
+                'agency_name': agency_primary['name'],
+                'agency_city': agency_primary['city'],
+                'agency_state': agency_primary['state']['name'],
+                'agency_address': agency_primary['selection']['agency']['street1'],
+                'agency_zip': agency_primary['selection']['agency']['zipCode'],
+                'thumbnail_url': thumbnail_url,
+                'case_qr_code': 'https: // www.namus.gov/{}'.format(data['hrefQRCode']),
+                'date_reported': agency_primary['dateReported'],
+                'agency_website': agency_primary['selection']['agency']['websiteUrl']
+            }
         except KeyError:
-            date_reported = ''
+            pass
         try:
-            agency_website = agency_primary['selection']['agency']['websiteUrl']
-        except KeyError:
-            agency_website = ''
-        data_to_save = {
-            'id_number': data['id'],
-            'first_name': data['subjectIdentification']['firstName'],
-            'last_name': data['subjectIdentification']['lastName'],
-            'current_age': data['subjectIdentification']['currentMinAge'],
-            'age_when_missing': data['subjectIdentification']['computedMissingMinAge'],
-            'gender': data['subjectDescription']['sex']['name'],
-            'height': '{} inches'.format(data['subjectDescription']['heightFrom']),
-            'weight': '{} pounds'.format(data['subjectDescription']['weightFrom']),
-            'ethnicity': data['subjectDescription']['ethnicities'][0]['name'],
-            'hair_color': data['physicalDescription']['hairColor']['name'],
-            'eye_color': data['physicalDescription']['leftEyeColor']['name'],
-            'circumstances': data['circumstances']['circumstancesOfDisappearance'],
-            'agency_name': agency_primary['name'],
-            'agency_city': agency_primary['city'],
-            'agency_state': agency_primary['state']['name'],
-            'agency_address': agency_primary['selection']['agency']['street1'],
-            'agency_zip': agency_primary['selection']['agency']['zipCode'],
-            'thumbnail_url': thumbnail_url,
-            'case_qr_code': 'https: // www.namus.gov/{}'.format(data['hrefQRCode']),
-            'date_reported': date_reported,
-            'agency_website': agency_website
-        }
-        already_exists = MissingPerson.objects.filter(id_number=data_to_save['id_number'])
-        if already_exists:
-            print('Record already exists, skipping')
-            return False
-        else:
-            MP = MissingPerson(**data_to_save)
-            MP.save()
-            print('Record Saved {}'.format(total_saved))
-            return True
+            already_exists = MissingPerson.objects.filter(id_number=data_to_save['id_number'])
+            if already_exists:
+                print('Record already exists, skipping')
+                return False
+            else:
+                MP = MissingPerson(**data_to_save)
+                MP.save()
+                print('Record Saved {}'.format(total_saved))
+                return True
+        except:
+            pass
 
     def get_individual_json(self, id_nums):
         '''
