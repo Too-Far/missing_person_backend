@@ -58,7 +58,7 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
         id_numbers = []
         n = 0
         # ! Set # of pages to go through here
-        while n < 30:
+        while n < 50:
             print(n)
             cells = self.driver.find_elements_by_class_name(
                 'ui-grid-cell-contents')
@@ -99,29 +99,30 @@ class Command(BaseCommand, webdriver.Chrome, ChromeDriverManager):
         # except KeyError:
         #     agency_website = ''
         try:
-            data_to_save = {
-                'id_number': data['id'],
-                'first_name': data['subjectIdentification']['firstName'],
-                'last_name': data['subjectIdentification']['lastName'],
-                'current_age': data['subjectIdentification']['currentMinAge'],
-                'age_when_missing': data['subjectIdentification']['computedMissingMinAge'],
-                'gender': data['subjectDescription']['sex']['name'],
-                'height': '{} inches'.format(data['subjectDescription']['heightFrom']),
-                'weight': '{} pounds'.format(data['subjectDescription']['weightFrom']),
-                'ethnicity': data['subjectDescription']['ethnicities'][0]['name'],
-                'hair_color': data['physicalDescription']['hairColor']['name'],
-                'eye_color': data['physicalDescription']['leftEyeColor']['name'],
-                'circumstances': data['circumstances']['circumstancesOfDisappearance'],
-                'agency_name': agency_primary['name'],
-                'agency_city': agency_primary['city'],
-                'agency_state': agency_primary['state']['name'],
-                'agency_address': agency_primary['selection']['agency']['street1'],
-                'agency_zip': agency_primary['selection']['agency']['zipCode'],
-                'thumbnail_url': thumbnail_url,
-                'case_qr_code': 'https: // www.namus.gov/{}'.format(data['hrefQRCode']),
-                'date_reported': agency_primary['dateReported'],
-                'agency_website': agency_primary['selection']['agency']['websiteUrl']
-            }
+            if agency_primary:
+                data_to_save = {
+                    'id_number': data['id'],
+                    'first_name': data['subjectIdentification']['firstName'],
+                    'last_name': data['subjectIdentification']['lastName'],
+                    'current_age': data['subjectIdentification']['currentMinAge'],
+                    'age_when_missing': data['subjectIdentification']['computedMissingMinAge'],
+                    'gender': data['subjectDescription']['sex']['name'],
+                    'height': '{} inches'.format(data['subjectDescription']['heightFrom']),
+                    'weight': '{} pounds'.format(data['subjectDescription']['weightFrom']),
+                    'ethnicity': data['subjectDescription']['ethnicities'][0]['name'],
+                    'hair_color': data['physicalDescription']['hairColor']['name'],
+                    'eye_color': data['physicalDescription']['leftEyeColor']['name'],
+                    'circumstances': data['circumstances']['circumstancesOfDisappearance'],
+                    'agency_name': agency_primary['name'],
+                    'agency_city': agency_primary['city'],
+                    'agency_state': agency_primary['state']['name'],
+                    'agency_address': agency_primary['selection']['agency']['street1'],
+                    'agency_zip': agency_primary['selection']['agency']['zipCode'],
+                    'thumbnail_url': thumbnail_url,
+                    'case_qr_code': 'https: // www.namus.gov/{}'.format(data['hrefQRCode']),
+                    'date_reported': agency_primary['dateReported'],
+                    'agency_website': agency_primary['selection']['agency']['websiteUrl']
+                }
         except KeyError:
             pass
         try:
