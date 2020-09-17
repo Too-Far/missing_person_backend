@@ -1,7 +1,9 @@
 from django.db import models
+from django_random_queryset import RandomManager
 
 class MissingPerson(models.Model):
 
+    objects = RandomManager()
     case_qr_code = models.URLField(max_length=2500, null=True)
     thumbnail_url = models.URLField(max_length=2500, null=True)
     agency_zip = models.CharField(max_length=2000, null=True)
